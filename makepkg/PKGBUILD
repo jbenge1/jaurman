@@ -1,0 +1,30 @@
+# Maintainer: Justin Benge <justinbng36@gmail.com>
+pkgname=jaurman
+pkgver=0.1.1
+pkgrel=1
+pkgdesc='helper tools for the arch user repository'
+url='https://github.com/jbenge1/jaurman'
+arch=('any')
+license=('custom:ISC')
+source=('git+https://github.com/jbenge1/jaurman')
+sha256sums=('SKIP')
+conflicts=('jaurman')
+provides=("jaurman=${pkgver%%.r*}")
+depends=('git')
+makedepends=('git')
+optdepends=()
+
+#pkgver() {
+#    cd jaurman
+#    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/; s/-/./g'
+#}
+
+build() {
+    cd jaurman
+    make DESTDIR="$pkgdir"
+}
+
+package() {
+    cd jaurman
+    make DESTDIR="$pkgdir" install
+}
