@@ -13,4 +13,4 @@ completion:
 
 install: 
 	@install -Dm755 jaurman   -t $(DESTDIR)$(BINDIR)
-	@install -Dm755	lib/aur-* -t $(DESTDIR)$(LIBDIR)/$(PROGNM)
+	@install -Dm755	lib/aur_* -t $(DESTDIR)$(LIBDIR)/$(PROGNM)
