@@ -1,0 +1,26 @@
+#!/bin/env python3 
+
+import os
+import subprocess
+import fnmatch
+from shutil import copyfile
+
+from aur_definitions import *
+
+def download(pkg):
+    os.chdir(build_dir)
+    subprocess.run(['git', 'clone', aur_url + pkg + '.git'], stdout=out, stderr=out)
+
+def build(pkg):
+    os.chdir(build_dir + pkg)
+    os.system("vim PKGBUILD")
+    subprocess.run(["makepkg", "-s"], stdout=out, stderr=out)
+
+def add_to_repo(pkg):
+    os.chdir(build_dir + pkg)
+    for file_name in os.listdir('.'):
+        if fnmatch.fnmatch(file_name, '*.pkg.tar.xz'):
+            os.popen("cp " + file_name + " " + repo_dir)
+            subprocess.run(["cp", file_name , repo_dir], stdout=out, stderr=out)
+            subprocess.run(["repo-add", repo, repo_dir+file_name], stdout=out, stderr=out)
+            break

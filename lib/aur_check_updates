@@ -1,0 +1,44 @@
+#!/bin/env python3
+from distutils.version import LooseVersion
+from json import loads
+from urllib.request import urlopen
+import os
+
+
+from aur_definitions import *
+
+ret = os.popen("ls /home/justin/custom-repo/ | grep .pkg.tar.xz").read().rstrip().split('\n')
+
+PKGS = []
+VERS = {}
+
+
+
+def initialize_pkgs():
+    for i in range(len(ret)):
+        ret[i] = ret[i].rstrip('-0x86_64.pkg.tar.xz')
+        ret[i] = ret[i].split('-', 1)
+        PKGS.append(ret[i][0])
+        VERS[ret[i][0]] = ret[i][1]
+
+def get_pkg_info():
+    params = '&arg]=' + '&arg[]='.join(PKGS)
+    with urlopen(AUR + 'type=info' + params) as url:
+        info  = loads(url.read().decode())['results']
+    return info
+
+def check_updates():
+    info = get_pkg_info()
+    for pkg in info:
+       params = {'Name': pkg['Name'], 'Old': VERS[pkg['Name']], 'New': pkg['Version']}
+       available = LooseVersion(pkg['Version'])
+       installed = LooseVersion(VERS[pkg['Name']])
+       if installed < available:
+          print(NEW_FMT.format(**params))
+       elif installed != available:
+          print(OLD_FMT.format(**params))
+
+def check():
+    initialize_pkgs()
+    check_updates()
+

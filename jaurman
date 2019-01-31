@@ -1,0 +1,52 @@
+#!/bin/env python3 
+import sys
+
+import aur_get_pkg
+import aur_check_updates
+from aur_get_pkg import *
+
+
+def version(version=VERS):
+ print('''
+   /\/\\    
+  / /  \\    /\\        Jaurman v'''+version+'''
+ / / /\ \\  /  \\  /\\   ''', end = '')
+ print('''
+ \ \/ / /  \\  /  \\/   Copyright (c) 2018-2019 Justin Benge
+  \  / /    \\/    
+   \/\/               This program may be freely redistributed under
+		      the terms of the GNU General Public Licence.
+    ''')
+
+def print_help(param="HERE :D"):
+    print(param)
+
+
+if __name__ == '__main__':
+    ## Note, subtract 1 from number of arguments given on cli
+    if len(sys.argv) == 2:
+        if(sys.argv[1] == '-v'):
+            version()
+        if(sys.argv[1] == '-c'):
+            check()
+    elif len(sys.argv) != 3:
+        print_help()
+    elif sys.argv[1][0] != '-':
+        print_help()
+    else:
+        arguments = sys.argv[1].lstrip('-')
+        pkg       = sys.argv[2]
+        if arguments[0] == 'd':
+            arguments.lstrip('d')
+            download(pkg)
+        if arguments[0] == 'b':
+            arguments.lstrip('b')
+            build(pkg)
+        if arguments[0] == 'a':
+            arguments.lstrip('a')
+            add_to_repo(pkg)
+        if arguments[0] == 'D':
+            download(pkg)
+            build(pkg)
+            add_to_repo(pkg)
+            exit(0)
