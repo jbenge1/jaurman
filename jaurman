@@ -1,3 +1,11 @@
+'''
+ ----------------------------------------------------------------------------
+ "THE BEER-WARE LICENSE" (Revision 42):
+ <phk@FreeBSD.ORG> wrote this file.  As long as you retain this notice you
+ can do whatever you want with this stuff. If we meet some day, and you think
+ this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
+ ----------------------------------------------------------------------------
+'''
 #!/bin/env python3 
 import sys
 
@@ -37,11 +45,18 @@ def version(version=VERSION):
  \ \/ / /  \\  /  \\/   Copyright (c) 2018-2019 Justin Benge
   \  / /    \\/    
    \/\/               This program may be freely redistributed under
-		      the terms of the GNU General Public Licence.
+		      the terms of the Beerware licence.
     ''')
 
 def print_help(param="HERE :D"):
-    print(param)
+    print("usage: jaurman <operation> [...]")
+    print("operations:")
+    print("jaurman {-h --help}")    
+    print("jaurman {-v --version}")
+    print("jaurman {-c --checkUpdates}")
+    print("jaurman -D <package>  --Download, build, and store package in custom repo")
+    
+	  
 
 
 def initialize_pkgs():
