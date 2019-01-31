@@ -1,12 +1,34 @@
 #!/bin/env python3 
 import sys
 
-import aur_get_pkg
-import aur_check_updates
-from aur_get_pkg import *
+from distutils.version import LooseVersion
+from json import loads
+from urllib.request import urlopen
+from shutil import copyfile
+import os
+import subprocess
+import fnmatch
 
 
-def version(version=VERS):
+
+
+VERSION   = '1.0.0'
+out       = None
+AUR       ='https://AUR.archlinux.org/rpc/?v=5&'
+NEW_FMT   = '\033[34m:: \033[0;1m{Name} \033[0;31m{Old}\033[0m -> \033[32m{New}\033[0m'
+OLD_FMT   = '\033[34m:: \033[0;1m{Name} \033[0m{Old} != {New}'
+aur_url   = "https://aur.archlinux.org/"
+build_dir = "/home/justin/Documents/Build/"
+repo_dir  = "/home/justin/custom-repo/"
+repo      = "/home/justin/custom-repo/custom.db.tar.gz"
+
+
+ret = os.popen("ls /home/justin/custom-repo/ | grep .pkg.tar.xz").read().rstrip().split('\n')
+
+PKGS = []
+VERS = {}
+
+def version(version=VERSION):
  print('''
    /\/\\    
   / /  \\    /\\        Jaurman v'''+version+'''
@@ -20,6 +42,56 @@ def version(version=VERS):
 
 def print_help(param="HERE :D"):
     print(param)
+
+
+def initialize_pkgs():
+    for i in range(len(ret)):
+        ret[i] = ret[i].rstrip('-0x86_64.pkg.tar.xz')
+        ret[i] = ret[i].split('-', 1)
+        PKGS.append(ret[i][0])
+        VERS[ret[i][0]] = ret[i][1]
+
+def get_pkg_info():
+    params = '&arg]=' + '&arg[]='.join(PKGS)
+    with urlopen(AUR + 'type=info' + params) as url:
+        info  = loads(url.read().decode())['results']
+    return info
+
+def check_updates():
+    info = get_pkg_info()
+    for pkg in info:
+       params = {'Name': pkg['Name'], 'Old': VERS[pkg['Name']], 'New': pkg['Version']}
+       available = LooseVersion(pkg['Version'])
+       installed = LooseVersion(VERS[pkg['Name']])
+       if installed < available:
+          print(NEW_FMT.format(**params))
+       elif installed != available:
+          print(OLD_FMT.format(**params))
+
+def check():
+    initialize_pkgs()
+    check_updates()
+
+
+def download(pkg):
+    os.chdir(build_dir)
+    subprocess.run(['git', 'clone', aur_url + pkg + '.git'], stdout=out, stderr=out)
+
+def build(pkg):
+    os.chdir(build_dir + pkg)
+    os.system("vim PKGBUILD")
+    subprocess.run(["makepkg", "-s"], stdout=out, stderr=out)
+
+def add_to_repo(pkg):
+    os.chdir(build_dir + pkg)
+    for file_name in os.listdir('.'):
+        if fnmatch.fnmatch(file_name, '*.pkg.tar.xz'):
+            os.popen("cp " + file_name + " " + repo_dir)
+            subprocess.run(["cp", file_name , repo_dir], stdout=out, stderr=out)
+            subprocess.run(["repo-add", repo, repo_dir+file_name], stdout=out, stderr=out)
+            break
+
+
 
 
 if __name__ == '__main__':
