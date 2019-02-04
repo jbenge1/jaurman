@@ -34,9 +34,10 @@ repo      = "/home/justin/custom-repo/custom.db.tar.gz"
 flags = [
     ["-D", "--downloadAndBuild", 
         "download and build specified packages"],
-    ["-U", "-update",
-        "check for available updates"]
-
+    ["-U", "--update",
+        "check for available updates"],
+    ["-v", "--version",
+        "Display version and exit"]
 ]
 
 ret = os.popen("ls /home/justin/custom-repo/ | grep .pkg.tar.xz").read().rstrip().split('\n')
@@ -156,3 +157,10 @@ for f in flags:
 parser.add_argument('pkg', nargs='*', help='package names or search terms')
 args = parser.parse_args(sys.argv[1:])
 args.data = None
+
+if args.version:
+    version()
+if args.downloadAndBuild:
+    full_download(args)
+elif args.update:
+    check(args)
