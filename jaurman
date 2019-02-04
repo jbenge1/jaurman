@@ -8,6 +8,11 @@
  ----------------------------------------------------------------------------
 '''
 
+"""
+TODO:
+    1.) I dunno....
+"""
+
 import sys
 
 from distutils.version import LooseVersion
@@ -21,7 +26,7 @@ import argparse
 
 
 
-VERSION   = '2.0.2'
+VERSION   = '2.1.0'
 out       = None
 AUR       ='https://AUR.archlinux.org/rpc/?v=5&'
 NEW_FMT   = '\033[34m:: \033[0;1m{Name} \033[0;31m{Old}\033[0m -> \033[32m{New}\033[0m'
@@ -97,29 +102,32 @@ def check():
     check_updates()
 
 
-def download(pkg):
+def download(args):
     os.chdir(build_dir)
-    subprocess.run(['git', 'clone', aur_url + pkg + '.git'], stdout=out, stderr=out)
+    for pkg in args.pkg:
+        subprocess.run(['git', 'clone', aur_url + pkg + '.git'], stdout=out, stderr=out)
 
-def build(pkg):
-    os.chdir(build_dir + pkg)
-    os.system("vim PKGBUILD")
-    subprocess.run(["makepkg", "-s"], stdout=out, stderr=out)
+def build(args):
+    for pkg in args.pkg:
+        os.chdir(build_dir + pkg)
+        os.system("vim PKGBUILD")
+        subprocess.run(["makepkg", "-s"], stdout=out, stderr=out)
 
-def add_to_repo(pkg):
-    os.chdir(build_dir + pkg)
-    for file_name in os.listdir('.'):
-        if fnmatch.fnmatch(file_name, '*.pkg.tar.xz'):
-            os.popen("cp " + file_name + " " + repo_dir)
-            subprocess.run(["cp", file_name , repo_dir], stdout=out, stderr=out)
-            subprocess.run(["repo-add", repo, repo_dir+file_name], stdout=out, stderr=out)
-            break
+def add_to_repo(args):
+    for pkg in args.pkg:
+        os.chdir(build_dir + pkg)
+        for file_name in os.listdir('.'):
+            if fnmatch.fnmatch(file_name, '*.pkg.tar.xz'):
+                os.popen("cp " + file_name + " " + repo_dir)
+                subprocess.run(["cp", file_name , repo_dir], stdout=out, stderr=out)
+                subprocess.run(["repo-add", repo, repo_dir+file_name], stdout=out, stderr=out)
+                break
 
 
-def full_download(pkg):
-    download(pkg)
-    build(pkg)
-    add_to_repo(pkg)
+def full_download(args):
+    download(args)
+    build(args)
+    add_to_repo(args)
 
 
 parser = argparse.ArgumentParser()
