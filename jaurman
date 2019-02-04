@@ -21,7 +21,7 @@ import argparse
 
 
 
-VERSION   = '2.0.1'
+VERSION   = '2.0.2'
 out       = None
 AUR       ='https://AUR.archlinux.org/rpc/?v=5&'
 NEW_FMT   = '\033[34m:: \033[0;1m{Name} \033[0;31m{Old}\033[0m -> \033[32m{New}\033[0m'
