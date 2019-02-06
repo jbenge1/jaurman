@@ -10,7 +10,7 @@
 
 """
 TODO:
-    1.) I dunno....
+    1.) I fix "check..."
 """
 
 import sys
@@ -22,11 +22,11 @@ from shutil import copyfile
 import os
 import subprocess
 import fnmatch
-import argparse
+import argparse, argcomplete
 
 
 
-VERSION   = '2.1.0'
+VERSION   = '2.1.2'
 out       = None
 AUR       ='https://AUR.archlinux.org/rpc/?v=5&'
 NEW_FMT   = '\033[34m:: \033[0;1m{Name} \033[0;31m{Old}\033[0m -> \033[32m{New}\033[0m'
@@ -134,12 +134,14 @@ parser = argparse.ArgumentParser()
 for f in flags:
    parser.add_argument(f[0], f[1], action='count', help=f[2])
 parser.add_argument('pkg', nargs='*', help='package names or search terms')
+argcomplete.autocomplete(parser)
 args = parser.parse_args(sys.argv[1:])
 args.data = None
+
 
 if args.version:
     version()
 if args.downloadAndBuild:
     full_download(args)
 elif args.update:
-    check(args)
+    check()

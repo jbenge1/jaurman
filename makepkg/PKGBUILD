@@ -1,7 +1,7 @@
 # Maintainer: Justin Benge <justinbng36@gmail.com>
 pkgname=jaurman
-pkgver=1.0.0
-pkgrel=2
+pkgver=2.1.2
+pkgrel=1
 pkgdesc='helper tools for the arch user repository'
 url='https://github.com/jbenge1/jaurman'
 arch=('any')
@@ -10,7 +10,7 @@ source=('git+https://github.com/jbenge1/jaurman')
 sha256sums=('SKIP')
 conflicts=('jaurman')
 provides=("jaurman=${pkgver%%.r*}")
-depends=('git')
+depends=('git' 'python-argcomplete)
 makedepends=('git')
 optdepends=()
 
