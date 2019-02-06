@@ -130,7 +130,7 @@ def full_download(args):
     add_to_repo(args)
 
 
-parser = argparse.ArgumentParser(description=print_help())
+parser = argparse.ArgumentParser()
 for f in flags:
    parser.add_argument(f[0], f[1], action='count', help=f[2])
 parser.add_argument('pkg', nargs='*', help='package names or search terms')
@@ -141,7 +141,9 @@ args.data = None
 
 if args.version:
     version()
-if args.downloadAndBuild:
+elif args.downloadAndBuild:
     full_download(args)
 elif args.update:
     check()
+else:
+    print_help()
