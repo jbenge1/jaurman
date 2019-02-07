@@ -10,7 +10,7 @@
 
 """
 TODO:
-    1.) I fix "check..."
+    1.) ???
 """
 
 import sys
@@ -42,7 +42,9 @@ flags = [
     ["-U", "--update",
         "check for available updates"],
     ["-v", "--version",
-        "Display version and exit"]
+        "Display version and exit"],
+    ["-R", "--remove",
+        "Remove package from repo"]
 ]
 
 ret = os.popen("ls /home/justin/custom-repo/ | grep .pkg.tar.xz").read().rstrip().split('\n')
@@ -69,7 +71,7 @@ def print_help(param="HERE :D"):
     print("jaurman {-v --version}")
     print("jaurman {-c --checkUpdates}")
     print("jaurman -D <package>  --Download, build, and store package in custom repo")
-    
+     
 	  
 
 
@@ -129,6 +131,9 @@ def full_download(args):
     build(args)
     add_to_repo(args)
 
+def remove_package(args):
+    for pkg in args.pkg:
+        os.popen("repo-remove /home/justin/custom-repo/custom.db.tar.gz " + pkg)
 
 parser = argparse.ArgumentParser()
 for f in flags:
@@ -145,5 +150,7 @@ elif args.downloadAndBuild:
     full_download(args)
 elif args.update:
     check()
+elif args.remove:
+    remove_package(args)
 else:
     print_help()
