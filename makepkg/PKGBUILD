@@ -1,7 +1,7 @@
 # Maintainer: Justin Benge <justinbng36@gmail.com>
 pkgname=jaurman
-pkgver=2.1.2
-pkgrel=3
+pkgver=2.2.1
+pkgrel=1
 pkgdesc='helper tools for the arch user repository'
 url='https://github.com/jbenge1/jaurman'
 arch=('any')
