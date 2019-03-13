@@ -113,6 +113,9 @@ def build(args):
     for pkg in args.pkg:
         os.chdir(build_dir + pkg)
         os.system("vim PKGBUILD")
+	proceed = input("Proceed with build? [y/N]: ")
+	if(proceed.lower() != "y" or proceed != "")
+	    sys.exit(1)
         subprocess.run(["makepkg", "-s"], stdout=out, stderr=out)
 
 def add_to_repo(args):
